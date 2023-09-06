@@ -32,9 +32,9 @@ public class Main {
         Article article = new Article();
         article.id = id;
         article.title = title;
-        article.contet = content;
+        article.content = content;
 
-        System.out.println(("생성 된 게시물 객체\n" +  article));
+        System.out.println(("생성된 게시물 객체\n" +  article));
         System.out.printf("%d번 게시물이 등록되었습니다.\n",article.id);
       }
       else {
@@ -49,6 +49,12 @@ public class Main {
 class Article{
   int id;
   String title;
-  String contet;
+  String content;
 
+  @Override // 통째로 외우기 !!!!!!!!!!!
+  public String toString(){
+    return String.format("{id : \"%d\", title :\"%s\", content : \"%s\" }" ,id,title,content);
+    //return "안녕  %d".formatted(10); // 위에랑 같으 표현
+  }
 }
+
