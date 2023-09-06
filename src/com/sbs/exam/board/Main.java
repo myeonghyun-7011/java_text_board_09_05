@@ -28,18 +28,27 @@ public class Main {
         String content = sc.nextLine();
 
         int id = articlesLastId + 1;
-        articlesLastId = id;
 
-        System.out.printf("%d번 게시물이 등록되었습니다.\n", id);
+        Article article = new Article();
+        article.id = id;
+        article.title = title;
+        article.contet = content;
+
+        System.out.println(("생성 된 게시물 객체\n" +  article));
+        System.out.printf("%d번 게시물이 등록되었습니다.\n",article.id);
       }
       else {
         System.out.printf("입력된 명령어 : %s \n", cmd);
       }
-
-
     }
     System.out.println("== 프로그램 종료 == ");
     sc.close();
   }
+
+}
+class Article{
+  int id;
+  String title;
+  String contet;
 
 }
