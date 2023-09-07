@@ -18,9 +18,12 @@ public class Main {
     Scanner sc = new Scanner(System.in);
 
     int articlesLastId = 0;
-    Article lastArticle = null; //
+
     List<Article> articles = new ArrayList<>();// Article 전용 리스트 생성
     // 위에 테스트 게시물을 리스트로 불러오기 위해서 사용.
+
+
+    //Article lastArticle = null; // 84번줄 // lastArticle 변수 필요성을 제거.
 
     // 텍스트 게시판 리팩토리하는 방법
     makeTestData(articles);
@@ -56,7 +59,7 @@ public class Main {
 
         // 게시물 입력한내용들이 new 객체내용대로  aticle(변수)로 들어옴.
         Article article = new Article(id, title, content);
-        lastArticle = article;
+        //lastArticle = article;
         //new 객체에 내용이 없으면 lastArticle은 null 아무것도 없기 대문에 존재하지 않는다고 뜸.
 
         //write 에 게시물 등록시 detail 새로 생성된 게시물을 article에 추가.
@@ -70,12 +73,15 @@ public class Main {
       } else if (cmd.equals("/usr/article/detail")) {
 
         // /usr/article/detail 입력 햇을시 내용물이 없으면 출력하고 다시 명령 하기.
-        if (lastArticle == null) {
+        if (articles.isEmpty() /*lastArticle == null*/ ) {
+          // articles.size() == 0  ,
           System.out.println("게시물이 존재하지 않습니다.");
           continue; // 위로 다시 돌려보내기.
         }
 
-        Article article = lastArticle;
+        Article article = articles.get(articles.size()-1);
+        // lastArticle 변수 필요성을 제거.
+        //Article article = lastArticle;
 
         System.out.printf("== 게시물 상세내용== \n");
         System.out.printf("번호 : %d\n", article.id);
@@ -103,6 +109,7 @@ public class Main {
         //articles.stream().forEach(article ->  System.out.printf("%d / %s \n",article.id,article.title));
 
         // 역순 정렬 코드
+        // 저장되어있는 마지막 내용 부터 출력
         for (int i = articles.size() - 1; i >= 0; i--) {
           Article article = articles.get(i);
           System.out.printf("%d / %s \n", article.id, article.title);
