@@ -1,5 +1,7 @@
 package com.sbs.exam.board;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -7,7 +9,14 @@ public class Main {
     Scanner sc = new Scanner(System.in);
 
     int articlesLastId = 0;
-    Article lastArticle = null;
+    Article lastArticle = null; //
+    List<Article> articles = new ArrayList<>(); // Article 전용 리스트 생성
+
+    // 테스트 데이터 3개 등록 시작
+    articles.add(new Article(1, "제목1" , "내용1"));
+    articles.add(new Article(2, "제목2" , "내용2"));
+    articles.add(new Article(3, "제목3" , "내용3"));
+    //테스트 데이터 3개 등록 끝
 
 
     System.out.println("== 게시판 v 0.1 == ");
@@ -54,8 +63,25 @@ public class Main {
         System.out.printf("내용 : %s\n", article.content);
 
       }
+      else if (cmd.equals("/usr/article/list")){
+        System.out.println("== 게시물 리스트 ==");
+        System.out.println("-------------------");
+        System.out.println("번호 / 제목");
+        System.out.println("-------------------");
+        /*
+        for(int i = 0; i < articles.size(); i++){
+          Article article = articles.get(i);
+          System.out.printf("%d / %s \n",article.id,article.title);
+        }
+
+         */
+        for(Article article : articles){
+          System.out.printf("%d / %s \n",article.id,article.title);
+        }
+
+      }
       else {
-        System.out.printf("입력된 명령어 : %s \n", cmd);
+        System.out.println("잘못된 명령어 입니다");
       }
     }
     System.out.println("== 프로그램 종료 == ");
