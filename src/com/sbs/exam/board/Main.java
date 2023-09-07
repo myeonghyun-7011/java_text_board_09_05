@@ -24,6 +24,10 @@ public class Main {
     // 텍스트 게시판 리팩토리하는 방법
     makeTestData(articles);
 
+    if(articles.size() > 0){
+      articlesLastId = articles.get(articles.size() - 1).id;
+    }
+
 
     System.out.println("== 게시판 v 0.1 == ");
     System.out.println("== 프로그램 시작== ");
