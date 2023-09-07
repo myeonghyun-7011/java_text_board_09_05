@@ -25,7 +25,6 @@ public class Main {
     makeTestData(articles);
 
 
-
     System.out.println("== 게시판 v 0.1 == ");
     System.out.println("== 프로그램 시작== ");
     while (true) {
@@ -72,19 +71,25 @@ public class Main {
         System.out.println("-------------------");
         System.out.println("번호 / 제목");
         System.out.println("-------------------");
+        // 정순 정렬 코드
 
-        /*
+        // 향상된 for문 사용하여 2번재 방법
+//        for (Article article : articles) {
+//          System.out.printf("%d / %s \n", article.id, article.title);
+//        }
+        /*  for문 첫번째 방법
         for(int i = 0; i < articles.size(); i++){
           Article article = articles.get(i);
           System.out.printf("%d / %s \n",article.id,article.title);
-        }
-
-         */
-        for (Article article : articles) {
-          System.out.printf("%d / %s \n", article.id, article.title);
-        }
+        } */
         //stream 방식
         //articles.stream().forEach(article ->  System.out.printf("%d / %s \n",article.id,article.title));
+
+        // 역순 정렬 코드
+        for (int i = articles.size() - 1; i >= 0; i--) {
+          Article article = articles.get(i);
+          System.out.printf("%d / %s \n", article.id, article.title);
+        }
 
       } else {
         System.out.println("잘못된 명령어 입니다");
