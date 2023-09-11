@@ -2,6 +2,8 @@ package com.sbs.exam.board;
 
 import java.util.*;
 
+import static java.lang.Integer.*;
+
 public class Main {
   static void makeTestData(List<Article> articles) {
     // 테스트 데이터 3개 등록 시작
@@ -41,10 +43,13 @@ public class Main {
       String cmd = sc.nextLine();
 
       Rq rq = new Rq(cmd);
+      Map<String, String> params = rq.getParams();
 
       if (rq.getUrlPath().equals("exit")) {
         break;
-      } else if (rq.getUrlPath().equals("/usr/article/write")) {
+      }
+
+      else if (rq.getUrlPath().equals("/usr/article/write")) {
         System.out.println("==게시물 등록 ==");
 
         System.out.printf("제목 : ");
@@ -71,16 +76,21 @@ public class Main {
         System.out.printf("%d번 게시물이 등록되었습니다.\n", article.id);
 
       }
-      else if (cmd.equals("/usr/article/detail")) {
+      else if (rq.getUrlPath().equals("/usr/article/detail")) {
+        // rq.getParams().get("id); 이렇게도 사용가능함. 이게 더 좋음
+
+        int id = Integer.parseInt(params.get("id"));// 형변환
 
         // /usr/article/detail 입력 햇을시 내용물이 없으면 출력하고 다시 명령 하기.
-        if (articles.isEmpty() /*lastArticle == null*/ ) {
+        if (articles.isEmpty() /*lastArticle == null*/ || id > articles.size()  ) {
+          // 게시물이 비어있거나 입력한 id가 article에 size를 넘을경우 출력
           // articles.size() == 0  ,
           System.out.println("게시물이 존재하지 않습니다.");
           continue; // 위로 다시 돌려보내기.
         }
 
-        Article article = articles.get(articles.size() - 1);
+        Article article = articles.get(id - 1);
+
         // 마지막 게시물 가져오기
         // lastArticle 변수 필요성을 제거.
         //Article article = lastArticle;
@@ -158,7 +168,7 @@ class Rq {
     params = Util.getParamsFromUrl(this.url);
   }
 
-  public Map<String, String> getparams() {
+  public Map<String, String> getParams() {
 
     return params;
   }
