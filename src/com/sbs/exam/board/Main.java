@@ -1,8 +1,6 @@
 package com.sbs.exam.board;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
   static void makeTestData(List<Article> articles) {
@@ -42,9 +40,11 @@ public class Main {
       System.out.printf("명령 : ");
       String cmd = sc.nextLine();
 
-      if (cmd.equals("exit")) {
+      Rq rq = new Rq(cmd);
+
+      if (rq.getUrlPath().equals("exit")) {
         break;
-      } else if (cmd.equals("/usr/article/write")) {
+      } else if (rq.getUrlPath().equals("/usr/article/write")) {
         System.out.println("==게시물 등록 ==");
 
         System.out.printf("제목 : ");
@@ -70,7 +70,8 @@ public class Main {
         System.out.println(("생성된 게시물 객체\n" + article));
         System.out.printf("%d번 게시물이 등록되었습니다.\n", article.id);
 
-      } else if (cmd.equals("/usr/article/detail")) {
+      }
+      else if (cmd.equals("/usr/article/detail")) {
 
         // /usr/article/detail 입력 햇을시 내용물이 없으면 출력하고 다시 명령 하기.
         if (articles.isEmpty() /*lastArticle == null*/ ) {
@@ -79,7 +80,8 @@ public class Main {
           continue; // 위로 다시 돌려보내기.
         }
 
-        Article article = articles.get(articles.size()-1);
+        Article article = articles.get(articles.size() - 1);
+        // 마지막 게시물 가져오기
         // lastArticle 변수 필요성을 제거.
         //Article article = lastArticle;
 
@@ -89,7 +91,7 @@ public class Main {
         System.out.printf("내용 : %s\n", article.content);
 
       }
-      else if (cmd.equals("/usr/article/list")) {
+      else if (rq.getUrlPath().equals("/usr/article/list")) {
         System.out.println("== 게시물 리스트 ==");
         System.out.println("-------------------");
         System.out.println("번호 / 제목");
@@ -105,7 +107,7 @@ public class Main {
           Article article = articles.get(i);
           System.out.printf("%d / %s \n",article.id,article.title);
         } */
-        //stream 방식
+        //stream 방식 forEach사용
         //articles.stream().forEach(article ->  System.out.printf("%d / %s \n",article.id,article.title));
 
         // 역순 정렬 코드
@@ -144,4 +146,53 @@ class Article {
     //return "안녕  %d".formatted(10); // 위에랑 같으 표현
   }
 }
+class Rq {
+  private String  url;
+  private Map<String, String> params; // params = 0; 이랑 같음.
 
+  private String urlPath;
+
+  Rq(String url) {
+    this.url = url;
+    urlPath = Util.getUrlPathFromUrl(this.url);
+    params = Util.getParamsFromUrl(this.url);
+  }
+
+  public Map<String, String> getparams() {
+
+    return params;
+  }
+
+  public String getUrlPath() {
+
+    return urlPath;
+  }
+}
+
+
+class Util {
+  static Map<String, String> getParamsFromUrl(String url) {
+    Map<String, String> params = new HashMap<>();
+    String[] urlBits = url.split("\\?", 2); //2개 이상 나뉘는건 원치 않는다.
+
+    if (urlBits.length == 1) { // 나뉘지 않았다면 '?' 가 없다는 뜻, 더이상 할일이 없음.
+      return params;
+    }
+    String queryString = urlBits[1];
+
+    for (String bit : queryString.split(("&"))) {
+      String[] bits = bit.split("=", 2); //2개이상 나뉘는건 원치않음.
+
+      if (bits.length == 1) { // 나뉘지 않았다면 = 가 없다는뜻. 즉 잘못된 파라미터라는뜻.
+        continue; // for문 상단으로 돌아간다. 죽 아래 코드 스킵
+      }
+      params.put(bits[0], bits[1]);
+
+    }
+    return params;
+  }
+
+  static String getUrlPathFromUrl(String url) {
+    return url.split("\\?", 2)[0];
+  }
+}
