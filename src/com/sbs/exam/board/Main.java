@@ -77,9 +77,23 @@ public class Main {
 
       }
       else if (rq.getUrlPath().equals("/usr/article/detail")) {
+
+        if(params.containsKey("id") == false){
+          System.out.println("id를 입력해주세요");
+          continue;
+        }
         // rq.getParams().get("id); 이렇게도 사용가능함. 이게 더 좋음
 
-        int id = Integer.parseInt(params.get("id"));// 형변환
+        // int id = Integer.parseInt(params.get("id"));// 형변환
+
+        int id = 0;
+
+        try { // exception 걸러내기
+           id = Integer.parseInt(params.get("id"));
+        }catch (NumberFormatException e){
+          System.out.println("id를 정수 형태로 입력해주세요.");
+          continue;
+        }
 
         // /usr/article/detail 입력 햇을시 내용물이 없으면 출력하고 다시 명령 하기.
         if (articles.isEmpty() /*lastArticle == null*/ || id > articles.size()  ) {
@@ -93,7 +107,7 @@ public class Main {
 
         // 마지막 게시물 가져오기
         // lastArticle 변수 필요성을 제거.
-        //Article article = lastArticle;
+        // Article article = lastArticle;
 
         System.out.printf("== 게시물 상세내용== \n");
         System.out.printf("번호 : %d\n", article.id);
