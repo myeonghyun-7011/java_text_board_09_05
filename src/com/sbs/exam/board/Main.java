@@ -27,11 +27,11 @@ public class Main {
 
     // 텍스트 게시판 리팩토리하는 방법
     makeTestData(articles);
-   //  자바_텍스트_게시판_만들기();
+    //  자바_텍스트_게시판_만들기();
     //위에 변수를 (ctrl + 1)을 사용하여 만들게 되면 public하고 생김 남들이 봤을 때, 더 한눈에 알아보기 위해서 사용
 
     // test게시물을 임의로 3개만 만들어 뒀기 때문에 다음 번호인 4번부터 받아와서 불러오기.
-    if(articles.size() > 0){
+    if (articles.size() > 0) {
       articlesLastId = articles.get(articles.size() - 1).id;
     }
 
@@ -47,9 +47,7 @@ public class Main {
 
       if (rq.getUrlPath().equals("exit")) {
         break;
-      }
-
-      else if (rq.getUrlPath().equals("/usr/article/write")) {
+      } else if (rq.getUrlPath().equals("/usr/article/write")) {
         System.out.println("==게시물 등록 ==");
 
         System.out.printf("제목 : ");
@@ -75,10 +73,9 @@ public class Main {
         System.out.println(("생성된 게시물 객체\n" + article));
         System.out.printf("%d번 게시물이 등록되었습니다.\n", article.id);
 
-      }
-      else if (rq.getUrlPath().equals("/usr/article/detail")) {
+      } else if (rq.getUrlPath().equals("/usr/article/detail")) {
 
-        if(params.containsKey("id") == false){
+        if (params.containsKey("id") == false) {
           System.out.println("id를 입력해주세요");
           continue;
         }
@@ -88,15 +85,15 @@ public class Main {
 
         int id = 0;
 
-        try { // exception 걸러내기
-           id = Integer.parseInt(params.get("id"));
-        }catch (NumberFormatException e){
+        try { // exception 걸러내기  유효성 검사라고함.
+          id = Integer.parseInt(params.get("id"));
+        } catch (NumberFormatException e) {
           System.out.println("id를 정수 형태로 입력해주세요.");
           continue;
         }
 
         // /usr/article/detail 입력 햇을시 내용물이 없으면 출력하고 다시 명령 하기.
-        if (articles.isEmpty() /*lastArticle == null*/ || id > articles.size()  ) {
+        if (articles.isEmpty() /*lastArticle == null*/ || id > articles.size()) {
           // 게시물이 비어있거나 입력한 id가 article에 size를 넘을경우 출력
           // articles.size() == 0  ,
           System.out.println("게시물이 존재하지 않습니다.");
@@ -114,14 +111,19 @@ public class Main {
         System.out.printf("제목 : %s\n", article.title);
         System.out.printf("내용 : %s\n", article.content);
 
-      }
-      else if (rq.getUrlPath().equals("/usr/article/list")) {
+      } else if (rq.getUrlPath().equals("/usr/article/list")) {
         System.out.println("== 게시물 리스트 ==");
         System.out.println("-------------------");
         System.out.println("번호 / 제목");
         System.out.println("-------------------");
-        // 정순 정렬 코드
 
+        // ***************정순 정렬 코드****************
+        //stream 방식 forEach사용 3번째 방법
+        boolean orderByIdDesc = true;
+
+        if (params.containsKey("orderBy") && params.get("orderBy").equals("idAsc")) {
+          orderByIdDesc = false;
+        }
         // 향상된 for문 사용하여 2번재 방법
 //        for (Article article : articles) {
 //          System.out.printf("%d / %s \n", article.id, article.title);
@@ -131,16 +133,23 @@ public class Main {
           Article article = articles.get(i);
           System.out.printf("%d / %s \n",article.id,article.title);
         } */
-        //stream 방식 forEach사용
-        //articles.stream().forEach(article ->  System.out.printf("%d / %s \n",article.id,article.title));
 
-        // 역순 정렬 코드
+        //************** 역순 정렬 코드 *************
         // 저장되어있는 마지막 내용 부터 출력
-        for (int i = articles.size() - 1; i >= 0; i--) {
-          Article article = articles.get(i);
-          System.out.printf("%d / %s \n", article.id, article.title);
+        if (orderByIdDesc) { // 내림차순 1,2,3,4
+          for (int i = articles.size() - 1; i >= 0; i--) {
+            Article article = articles.get(i);
+            System.out.printf("%d / %s \n", article.id, article.title);
+          }
         }
-
+        else { //오름차순 4,3,2,1
+          // stream 사용한것
+          //articles.stream().forEach(article -> System.out.printf("%d / %s \n", article.id, article.title));
+          // 향상된 for문 사용
+          for(Article article : articles){
+            System.out.printf("%d / %s \n", article.id, article.title);
+          }
+        }
       }
       else {
         System.out.println("잘못된 명령어 입니다");
@@ -170,8 +179,9 @@ class Article {
     //return "안녕  %d".formatted(10); // 위에랑 같으 표현
   }
 }
+
 class Rq {
-  private String  url;
+  private String url;
   private Map<String, String> params; // params = 0; 이랑 같음.
 
   private String urlPath;
