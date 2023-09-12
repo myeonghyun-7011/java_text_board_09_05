@@ -43,8 +43,16 @@ public class UsrArticleController {
     System.out.printf("제목 : ");
     String title = Container.sc.nextLine();
 
+    if(title.length() == 0){
+      System.out.println("제목을 입력해주세요");
+    }
+
     System.out.printf("내용 : ");
     String content = Container.sc.nextLine();
+
+    if(content.length() == 0){
+      System.out.println("내용을 입력해주세요");
+    }
 
     // 게시물 번호 하나씩 증가시키기
     int id = ++articlesLastId;
