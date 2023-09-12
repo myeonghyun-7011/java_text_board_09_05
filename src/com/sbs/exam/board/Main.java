@@ -38,6 +38,8 @@ public class Main {
 
     System.out.println("== 게시판 v 0.1 == ");
     System.out.println("== 프로그램 시작== ");
+
+//--------------------------------------whil문 시작 ------------------------------------------------------------------
     while (true) {
       System.out.printf("명령 : ");
       String cmd = sc.nextLine();
@@ -47,7 +49,10 @@ public class Main {
 
       if (rq.getUrlPath().equals("exit")) {
         break;
-      } else if (rq.getUrlPath().equals("/usr/article/write")) {
+      }
+//--------------------------------------write------------------------------------------------------------------
+
+      else if (rq.getUrlPath().equals("/usr/article/write")) {
         System.out.println("==게시물 등록 ==");
 
         System.out.printf("제목 : ");
@@ -69,11 +74,14 @@ public class Main {
         //그래서 4번째 등록 게시물 생성.
         articles.add(article);
 
-
         System.out.println(("생성된 게시물 객체\n" + article));
         System.out.printf("%d번 게시물이 등록되었습니다.\n", article.id);
+      }
 
-      } else if (rq.getUrlPath().equals("/usr/article/detail")) {
+
+//--------------------------------------detail------------------------------------------------------------------
+
+      else if (rq.getUrlPath().equals("/usr/article/detail")) {
 
         if (params.containsKey("id") == false) {
           System.out.println("id를 입력해주세요");
@@ -111,11 +119,17 @@ public class Main {
         System.out.printf("제목 : %s\n", article.title);
         System.out.printf("내용 : %s\n", article.content);
 
-      } else if (rq.getUrlPath().equals("/usr/article/list")) {
+      }
+
+//--------------------------------------list------------------------------------------------------------------
+
+      else if (rq.getUrlPath().equals("/usr/article/list")) {
         System.out.println("== 게시물 리스트 ==");
         System.out.println("-------------------");
         System.out.println("번호 / 제목");
         System.out.println("-------------------");
+
+        List<Article> sortedArticles = articles; // 정렬이 안된 articles(1,2,3..순) 리모컨을
 
         // ***************정순 정렬 코드****************
         //stream 방식 forEach사용 3번째 방법
@@ -124,44 +138,44 @@ public class Main {
         if (params.containsKey("orderBy") && params.get("orderBy").equals("idAsc")) {
           orderByIdDesc = false;
         }
-        // 향상된 for문 사용하여 2번재 방법
-//        for (Article article : articles) {
-//          System.out.printf("%d / %s \n", article.id, article.title);
+        if (orderByIdDesc) {
+          sortedArticles = Util.reverseList((sortedArticles)); //정렬이 안된 리모컨을 가져와 정렬 시켜주는 리모컨만들기
+        }
+
+        //************** 역순 정렬 코드 *************
+        // 저장되어있는 마지막 내용 부터 출력
+//        if (orderByIdDesc) { // 오름차순 4,3,2,1
+//          for (int i = articles.size() - 1; i >= 0; i--) {
+//            Article article = articles.get(i);
+//            System.out.printf("%d / %s \n", article.id, article.title);
+//          }
 //        }
-        /*  for문 첫번째 방법
+        // else { // 내림차순 1,2,3,4
+          /*  1. for문
         for(int i = 0; i < articles.size(); i++){
           Article article = articles.get(i);
           System.out.printf("%d / %s \n",article.id,article.title);
         } */
+        // 2. 향상된 for문 사용
+        for (Article article : sortedArticles) {
+          System.out.printf("%d / %s \n", article.id, article.title);
 
-        //************** 역순 정렬 코드 *************
-        // 저장되어있는 마지막 내용 부터 출력
-        if (orderByIdDesc) { // 내림차순 1,2,3,4
-          for (int i = articles.size() - 1; i >= 0; i--) {
-            Article article = articles.get(i);
-            System.out.printf("%d / %s \n", article.id, article.title);
-          }
-        }
-        else { //오름차순 4,3,2,1
-          // stream 사용한것
+          // 3. stream 사용한것
           //articles.stream().forEach(article -> System.out.printf("%d / %s \n", article.id, article.title));
-          // 향상된 for문 사용
-          for(Article article : articles){
-            System.out.printf("%d / %s \n", article.id, article.title);
-          }
         }
       }
-      else {
-        System.out.println("잘못된 명령어 입니다");
-      }
+
+//--------------------------------------종료문------------------------------------------------------------------
+      else{
+      System.out.println("잘못된 명령어 입니다");
     }
+  }
     System.out.println("== 프로그램 종료 == ");
     sc.close();
-  }
-
-
+}
 }
 
+//--------------------------------------Artice 객체 생성------------------------------------------------------------------
 class Article {
   int id;
   String title;
@@ -179,6 +193,8 @@ class Article {
     //return "안녕  %d".formatted(10); // 위에랑 같으 표현
   }
 }
+
+//--------------------------------------Rq 객체 생성------------------------------------------------------------------
 
 class Rq {
   private String url;
@@ -203,6 +219,7 @@ class Rq {
   }
 }
 
+//--------------------------------------Util 객체 생성------------------------------------------------------------------
 
 class Util {
   static Map<String, String> getParamsFromUrl(String url) {
@@ -228,5 +245,18 @@ class Util {
 
   static String getUrlPathFromUrl(String url) {
     return url.split("\\?", 2)[0];
+  }
+
+  //이해하면됨. revers 뒤집다.
+
+  // 이 함수는 원본리스트를 훼손하지 않고, 새 리스트를 만든다.
+  // 즉 정렬이 반대인 복사본 리스트를 반환한다.
+  public static <T> List<T> reverseList(List<T> list) {
+    List<T> reverse = new ArrayList<>(list.size());
+
+    for (int i = list.size() - 1; i >= 0; i--) {
+      reverse.add(list.get(i));
+    }
+    return reverse;
   }
 }
