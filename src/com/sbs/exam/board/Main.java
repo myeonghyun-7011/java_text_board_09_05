@@ -3,7 +3,13 @@ package com.sbs.exam.board;
 import java.util.*;
 
 public class Main {
-  static void makeTestData(List<Article> articles) {
+  static int articlesLastId = 0; // 중복해결 // static이용 해야함.
+
+ static List<Article> articles = new ArrayList<>();// Article 전용 리스트 생성 // 중복해결
+  // 위에 테스트 게시물을 리스트로 불러오기 위해서 사용.
+
+
+  static void makeTestData() {
     for (int i = 1; i <= 100; i++) {
       articles.add(new Article(i, "제목" + i, "내용" + i));
     }
@@ -12,16 +18,10 @@ public class Main {
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
 
-    int articlesLastId = 0;
-
-    List<Article> articles = new ArrayList<>();// Article 전용 리스트 생성
-    // 위에 테스트 게시물을 리스트로 불러오기 위해서 사용.
-
-
     //Article lastArticle = null; // 84번줄 // lastArticle 변수 필요성을 제거.
 
     // 텍스트 게시판 리팩토리하는 방법
-    makeTestData(articles);
+    makeTestData();
     //  자바_텍스트_게시판_만들기();
     //위에 변수를 (ctrl + 1)을 사용하여 만들게 되면 public하고 생김 남들이 봤을 때, 더 한눈에 알아보기 위해서 사용
 
@@ -46,24 +46,23 @@ public class Main {
       }
 //--------------------------------------write------------------------------------------------------------------
       else if (rq.getUrlPath().equals("/usr/article/write")) {
-        actionUsrArticleWrite(sc, articles, articlesLastId);
-        articlesLastId++;
+        actionUsrArticleWrite(sc);
       }
 //--------------------------------------detail------------------------------------------------------------------
       else if (rq.getUrlPath().equals("/usr/article/detail")) {
-        actionUsrArticleDetail(rq, articles);
+        actionUsrArticleDetail(rq);
       }
 //--------------------------------------modify------------------------------------------------------------------
       else if (rq.getUrlPath().equals("/usr/article/modify")) {
-        actionUsrArticleModify(sc,rq, articles);
+        actionUsrArticleModify(sc,rq);
       }
 //--------------------------------------delete------------------------------------------------------------------
       else if (rq.getUrlPath().equals("/usr/article/delete")) {
-        actionUsrArticleDelete(sc,rq, articles);
+        actionUsrArticleDelete(sc,rq);
       }
 //--------------------------------------list------------------------------------------------------------------
       else if (rq.getUrlPath().equals("/usr/article/list")) {
-        actionUsrArticleList(rq, articles);
+        actionUsrArticleList(rq);
       }
 //--------------------------------------종료문------------------------------------------------------------------
       else {
@@ -75,7 +74,7 @@ public class Main {
   }
 
   //------------------------------------actionUsrArticleWrite()-----------------------------------------
-  private static void actionUsrArticleWrite(Scanner sc, List<Article> articles, int articlesLastId) {
+  private static void actionUsrArticleWrite(Scanner sc) {
     System.out.println("==게시물 등록 ==");
 
     System.out.printf("제목 : ");
@@ -103,7 +102,7 @@ public class Main {
   }
 
   //---------------------------------------- actionUsrArticleDetail----------------------------------------------------------------------
-  private static void actionUsrArticleDetail(Rq rq, List<Article> articles) {
+  private static void actionUsrArticleDetail(Rq rq) {
     Map<String, String> params = rq.getParams();
 
     if (params.containsKey("id") == false) {
@@ -157,7 +156,7 @@ public class Main {
   }
 
   //----------------------------actionUsrArticleModify-------------------------------------------
-  private static void actionUsrArticleModify(Scanner sc, Rq rq, List<Article> articles) {
+  private static void actionUsrArticleModify(Scanner sc, Rq rq) {
     Map<String, String> params = rq.getParams();
 
     if (params.containsKey("id") == false) {
@@ -207,7 +206,7 @@ public class Main {
     System.out.printf("== %d번  게시물이 수정 되었습니다. == \n", foundArticle.id);
   }
   //----------------------------actionUsrArticleDelete-------------------------------------------
-  private static void actionUsrArticleDelete(Scanner sc, Rq rq, List<Article> articles) {
+  private static void actionUsrArticleDelete(Scanner sc, Rq rq) {
     Map<String, String> params = rq.getParams();
 
     if (params.containsKey("id") == false) {
@@ -258,7 +257,7 @@ public class Main {
 
 
   //----------------------------actionUsrArticleList list문-------------------------------------------
-  private static void actionUsrArticleList(Rq rq, List<Article> articles) {
+  private static void actionUsrArticleList(Rq rq) {
 
     System.out.println("== 게시물 리스트 ==");
     System.out.println("-------------------");
