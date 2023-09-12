@@ -47,29 +47,8 @@ public class Main {
 //--------------------------------------write------------------------------------------------------------------
 
       else if (rq.getUrlPath().equals("/usr/article/write")) {
-        System.out.println("==게시물 등록 ==");
-
-        System.out.printf("제목 : ");
-        String title = sc.nextLine();
-
-        System.out.printf("내용 : ");
-        String content = sc.nextLine();
-
-        // 게시물 번호 하나씩 증가시키기
-        int id = articlesLastId + 1;
-        articlesLastId = id;
-
-        // 게시물 입력한내용들이 new 객체내용대로  aticle(변수)로 들어옴.
-        Article article = new Article(id, title, content);
-        //lastArticle = article;
-        //new 객체에 내용이 없으면 lastArticle은 null 아무것도 없기 대문에 존재하지 않는다고 뜸.
-
-        //write 에 게시물 등록시 detail 새로 생성된 게시물을 article에 추가.
-        //그래서 4번째 등록 게시물 생성.
-        articles.add(article);
-
-        System.out.println(("생성된 게시물 객체\n" + article));
-        System.out.printf("%d번 게시물이 등록되었습니다.\n", article.id);
+        actionUsrArticleWrite(sc,articles, articlesLastId);
+        articlesLastId++;
       }
 
 
@@ -93,7 +72,36 @@ public class Main {
     System.out.println("== 프로그램 종료 == ");
     sc.close();
   }
-//---------------------------------------- actionUsrArticleDetail----------------------------------------------------------------------
+
+//------------------------------------actionUsrArticleWrite()-----------------------------------------
+  private static void actionUsrArticleWrite(Scanner sc, List<Article> articles, int articlesLastId) {
+    System.out.println("==게시물 등록 ==");
+
+    System.out.printf("제목 : ");
+    String title = sc.nextLine();
+
+    System.out.printf("내용 : ");
+    String content = sc.nextLine();
+
+    // 게시물 번호 하나씩 증가시키기
+    int id = ++articlesLastId;
+//    int id = articlesLastId + 1;
+//    articlesLastId = id;
+
+    // 게시물 입력한내용들이 new 객체내용대로  aticle(변수)로 들어옴.
+    Article article = new Article(id, title, content);
+    //lastArticle = article;
+    //new 객체에 내용이 없으면 lastArticle은 null 아무것도 없기 대문에 존재하지 않는다고 뜸.
+
+    //write 에 게시물 등록시 detail 새로 생성된 게시물을 article에 추가.
+    //그래서 4번째 등록 게시물 생성.
+    articles.add(article);
+
+    System.out.println(("생성된 게시물 객체\n" + article));
+    System.out.printf("%d번 게시물이 등록되었습니다.\n", article.id);
+  }
+
+  //---------------------------------------- actionUsrArticleDetail----------------------------------------------------------------------
   private static void actionUsrArticleDetail(Rq rq, List<Article> articles) {
     Map<String, String> params = rq.getParams();
 
