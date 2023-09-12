@@ -8,9 +8,10 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class App {
-  int articlesLastId; //공유자원 // static이용 해야함.
+  private int articlesLastId; //공유자원
 
-  List<Article> articles; // Article 전용 리스트 생성 // 중복해결
+  //private써주는건 관례 App에서만 사용하기때문에 사용권장
+  private List<Article> articles; // Article 전용 리스트 생성
   // 위에 테스트 게시물을 리스트로 불러오기 위해서 사용.
 
   App() {
@@ -19,13 +20,13 @@ public class App {
   }
 
 
-  void makeTestData() {
+  private void makeTestData() {
     for (int i = 1; i <= 100; i++) {
       articles.add(new Article(i, "제목" + i, "내용" + i));
     }
   }
 
-  void run() {
+  public void run() {
 
 
     Scanner sc = Container.sc;
