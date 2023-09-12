@@ -10,10 +10,15 @@ import java.util.Scanner;
 
 
 public class Main {
-  static int articlesLastId = 0; //공유자원 // static이용 해야함.
+  static int articlesLastId ; //공유자원 // static이용 해야함.
 
- static List<Article> articles = new ArrayList<>();// Article 전용 리스트 생성 // 중복해결
+ static List<Article> articles; // Article 전용 리스트 생성 // 중복해결
   // 위에 테스트 게시물을 리스트로 불러오기 위해서 사용.
+
+  static {
+    articlesLastId = 0;
+    articles = new ArrayList<>();
+  }
 
 
   static void makeTestData() {
