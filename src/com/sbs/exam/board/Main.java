@@ -45,25 +45,22 @@ public class Main {
         break;
       }
 //--------------------------------------write------------------------------------------------------------------
-
       else if (rq.getUrlPath().equals("/usr/article/write")) {
-        actionUsrArticleWrite(sc,articles, articlesLastId);
+        actionUsrArticleWrite(sc, articles, articlesLastId);
         articlesLastId++;
       }
-
-
 //--------------------------------------detail------------------------------------------------------------------
-
       else if (rq.getUrlPath().equals("/usr/article/detail")) {
         actionUsrArticleDetail(rq, articles);
       }
+//--------------------------------------modify------------------------------------------------------------------
+      else if (rq.getUrlPath().equals("/usr/article/modify")) {
+        actionUsrArticleModify(sc,rq, articles);
+      }
 //--------------------------------------list------------------------------------------------------------------
-
       else if (rq.getUrlPath().equals("/usr/article/list")) {
         actionUsrArticleList(rq, articles);
       }
-
-
 //--------------------------------------종료문------------------------------------------------------------------
       else {
         System.out.println("잘못된 명령어 입니다");
@@ -72,8 +69,7 @@ public class Main {
     System.out.println("== 프로그램 종료 == ");
     sc.close();
   }
-
-//------------------------------------actionUsrArticleWrite()-----------------------------------------
+  //------------------------------------actionUsrArticleWrite()-----------------------------------------
   private static void actionUsrArticleWrite(Scanner sc, List<Article> articles, int articlesLastId) {
     System.out.println("==게시물 등록 ==");
 
@@ -142,8 +138,53 @@ public class Main {
     System.out.printf("내용 : %s\n", article.content);
   }
 
+  //----------------------------actionUsrArticleModify-------------------------------------------
+  private static void actionUsrArticleModify(Scanner sc, Rq rq, List<Article> articles) {
+    Map<String, String> params = rq.getParams();
+
+    if (params.containsKey("id") == false) {
+      System.out.println("id를 입력해주세요");
+      return;
+    }
+    // rq.getParams().get("id); 이렇게도 사용가능함. 이게 더 좋음
+
+    // int id = Integer.parseInt(params.get("id"));// 형변환
+
+    int id = 0;
+
+    try { // exception 걸러내기  유효성 검사라고함.
+      id = Integer.parseInt(params.get("id"));
+    } catch (NumberFormatException e) {
+      System.out.println("id를 정수 형태로 입력해주세요.");
+      return;
+    }
+
+    // /usr/article/detail 입력 햇을시 내용물이 없으면 출력하고 다시 명령 하기.
+    if (articles.isEmpty() /*lastArticle == null*/ || id > articles.size()) {
+      // 게시물이 비어있거나 입력한 id가 article에 size를 넘을경우 출력
+      // articles.size() == 0  ,
+      System.out.println("게시물이 존재하지 않습니다.");
+      return;
+    }
+
+    Article article = articles.get(id - 1);
+
+    // 마지막 게시물 가져오기
+    // lastArticle 변수 필요성을 제거.
+    // Article article = lastArticle;
+
+    System.out.printf("== %d번  게시물 수정== \n", article.id);
+    System.out.printf("새 제목 :");
+    article.title = sc.nextLine();
+    System.out.printf("새 내용 :");
+    article.content = sc.nextLine();
+
+    System.out.printf("== %d번  게시물이 수정 되었습니다. == \n", article.id);
+  }
+
+
   //----------------------------actionUsrArticleList list문-------------------------------------------
-  private static void actionUsrArticleList(Rq rq, List<Article> articles ) {
+  private static void actionUsrArticleList(Rq rq, List<Article> articles) {
 
     System.out.println("== 게시물 리스트 ==");
     System.out.println("-------------------");
