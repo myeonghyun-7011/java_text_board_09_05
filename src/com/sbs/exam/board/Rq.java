@@ -3,10 +3,10 @@ package com.sbs.exam.board;
 import java.util.Map;
 
 public class Rq {
-  private String url;
-  private Map<String, String> params; // params = 0; 이랑 같음.
+  public String url;
+  public Map<String, String> params; // params = 0; 이랑 같음.
 
-  private String urlPath;
+  public String urlPath;
 
   Rq(String url) {
     this.url = url;
