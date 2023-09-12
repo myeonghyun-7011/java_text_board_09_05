@@ -2,8 +2,6 @@ package com.sbs.exam.board;
 
 import java.util.*;
 
-import static java.lang.Integer.*;
-
 public class Main {
   static void makeTestData(List<Article> articles) {
     for (int i = 1; i <= 100; i++) {
@@ -120,59 +118,7 @@ public class Main {
 //--------------------------------------list------------------------------------------------------------------
 
       else if (rq.getUrlPath().equals("/usr/article/list")) {
-        System.out.println("== 게시물 리스트 ==");
-        System.out.println("-------------------");
-        System.out.println("번호 / 제목");
-        System.out.println("-------------------");
-
-        //==============검색시작================
-        List<Article> filteredArticles = articles;
-
-        if (params.containsKey("searchKeyword")) {
-          String searchKeyword = params.get("searchKeyword");
-
-          filteredArticles = new ArrayList<>();
-
-          for (Article article : articles) {
-            boolean matched = article.title.contains(searchKeyword) || article.content.contains(searchKeyword);
-
-            if (matched) {
-              filteredArticles.add(article);
-            }
-          }
-        }
-        // ************** 역순 정렬 코드****************
-        List<Article> sortedArticles = filteredArticles; //filter들어오기전까지는 articles;가맞음
-
-        boolean orderByIdDesc = true;
-
-        if (params.containsKey("orderBy") && params.get("orderBy").equals("idAsc")) {
-          orderByIdDesc = false;
-        }
-
-        //************** 정순 정렬 코드 *************
-        // 저장되어있는 마지막 내용 부터 출력
-        if (orderByIdDesc) { // 오름차순 4,3,2,1
-          sortedArticles = Util.reverseList(sortedArticles);
-        }
-//          for (int i = articles.size() - 1; i >= 0; i--) {
-//            Article article = articles.get(i);
-//            System.out.printf("%d / %s \n", article.id, article.title);
-//          }
-//        }
-//        else { // 내림차순 1,2,3,4
-          /*  1. for문
-        for(int i = 0; i < articles.size(); i++){
-          Article article = articles.get(i);
-          System.out.printf("%d / %s \n",article.id,article.title);
-        } */
-        // 2. 향상된 for문 사용
-        for (Article article : sortedArticles) {
-          System.out.printf("%d / %s \n", article.id, article.title);
-
-          // 3. stream 사용한것
-          //articles.stream().forEach(article -> System.out.printf("%d / %s \n", article.id, article.title));
-        }
+        actionUsrArticleList(articles, rq);
       }
 
 
@@ -184,7 +130,68 @@ public class Main {
     System.out.println("== 프로그램 종료 == ");
     sc.close();
   }
+
+  //----------------------------actionUsrArticleList list문-------------------------------------------
+  private static void actionUsrArticleList(List<Article> articles, Rq rq) {
+
+    System.out.println("== 게시물 리스트 ==");
+    System.out.println("-------------------");
+    System.out.println("번호 / 제목");
+    System.out.println("-------------------");
+
+    Map<String, String> params = rq.getParams();
+
+    //==============검색시작================
+    List<Article> filteredArticles = articles;
+
+    if (params.containsKey("searchKeyword")) {
+      String searchKeyword = params.get("searchKeyword");
+
+      filteredArticles = new ArrayList<>();
+
+      for (Article article : articles) {
+        boolean matched = article.title.contains(searchKeyword) || article.content.contains(searchKeyword);
+
+        if (matched) {
+          filteredArticles.add(article);
+        }
+      }
+    }
+    // ************** 역순 정렬 코드****************
+    List<Article> sortedArticles = filteredArticles; //filter들어오기전까지는 articles;가맞음
+
+    boolean orderByIdDesc = true;
+
+    if (params.containsKey("orderBy") && params.get("orderBy").equals("idAsc")) {
+      orderByIdDesc = false;
+    }
+
+    //************** 정순 정렬 코드 *************
+    // 저장되어있는 마지막 내용 부터 출력
+    if (orderByIdDesc) { // 오름차순 4,3,2,1
+      sortedArticles = Util.reverseList(sortedArticles);
+    }
+//          for (int i = articles.size() - 1; i >= 0; i--) {
+//            Article article = articles.get(i);
+//            System.out.printf("%d / %s \n", article.id, article.title);
+//          }
+//        }
+//        else { // 내림차순 1,2,3,4
+          /*  1. for문
+        for(int i = 0; i < articles.size(); i++){
+          Article article = articles.get(i);
+          System.out.printf("%d / %s \n",article.id,article.title);
+        } */
+    // 2. 향상된 for문 사용
+    for (Article article : sortedArticles) {
+      System.out.printf("%d / %s \n", article.id, article.title);
+
+      // 3. stream 사용한것
+      //articles.stream().forEach(article -> System.out.printf("%d / %s \n", article.id, article.title));
+    }
+  }
 }
+
 
 //--------------------------------------Article 객체 생성------------------------------------------------------------------
 class Article {
