@@ -7,9 +7,10 @@ import static java.lang.Integer.*;
 public class Main {
   static void makeTestData(List<Article> articles) {
     for (int i = 1; i <= 100; i++) {
-      articles.add(new Article(i, "제목" + i, "내용"+i));
+      articles.add(new Article(i, "제목" + i, "내용" + i));
     }
   }
+
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
 
@@ -116,7 +117,6 @@ public class Main {
         System.out.printf("내용 : %s\n", article.content);
 
       }
-
 //--------------------------------------list------------------------------------------------------------------
 
       else if (rq.getUrlPath().equals("/usr/article/list")) {
@@ -125,28 +125,42 @@ public class Main {
         System.out.println("번호 / 제목");
         System.out.println("-------------------");
 
-        List<Article> sortedArticles = articles; // 정렬이 안된 articles(1,2,3..순) 리모컨을
+        //==============검색시작================
+        List<Article> filteredArticles = articles;
 
-        // ***************정순 정렬 코드****************
-        //stream 방식 forEach사용 3번째 방법
+        if (params.containsKey("searchKeyword")) {
+          String searchKeyword = params.get("searchKeyword");
+
+          filteredArticles = new ArrayList<>();
+
+          for (Article article : articles) {
+            boolean matched = article.title.contains(searchKeyword) || article.content.contains(searchKeyword);
+
+            if (matched) {
+              filteredArticles.add(article);
+            }
+          }
+        }
+        // ************** 역순 정렬 코드****************
+        List<Article> sortedArticles = filteredArticles; //filter들어오기전까지는 articles;가맞음
+
         boolean orderByIdDesc = true;
 
         if (params.containsKey("orderBy") && params.get("orderBy").equals("idAsc")) {
           orderByIdDesc = false;
         }
-        if (orderByIdDesc) {
-          sortedArticles = Util.reverseList((sortedArticles)); //정렬이 안된 리모컨을 가져와 정렬 시켜주는 리모컨만들기
-        }
 
-        //************** 역순 정렬 코드 *************
+        //************** 정순 정렬 코드 *************
         // 저장되어있는 마지막 내용 부터 출력
-//        if (orderByIdDesc) { // 오름차순 4,3,2,1
+        if (orderByIdDesc) { // 오름차순 4,3,2,1
+          sortedArticles = Util.reverseList(sortedArticles);
+        }
 //          for (int i = articles.size() - 1; i >= 0; i--) {
 //            Article article = articles.get(i);
 //            System.out.printf("%d / %s \n", article.id, article.title);
 //          }
 //        }
-        // else { // 내림차순 1,2,3,4
+//        else { // 내림차순 1,2,3,4
           /*  1. for문
         for(int i = 0; i < articles.size(); i++){
           Article article = articles.get(i);
@@ -161,17 +175,18 @@ public class Main {
         }
       }
 
+
 //--------------------------------------종료문------------------------------------------------------------------
-      else{
-      System.out.println("잘못된 명령어 입니다");
+      else {
+        System.out.println("잘못된 명령어 입니다");
+      }
     }
-  }
     System.out.println("== 프로그램 종료 == ");
     sc.close();
-}
+  }
 }
 
-//--------------------------------------Artice 객체 생성------------------------------------------------------------------
+//--------------------------------------Article 객체 생성------------------------------------------------------------------
 class Article {
   int id;
   String title;
