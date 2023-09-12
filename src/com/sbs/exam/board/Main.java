@@ -40,7 +40,6 @@ public class Main {
       String cmd = sc.nextLine();
 
       Rq rq = new Rq(cmd);
-      Map<String, String> params = rq.getParams();
 
       if (rq.getUrlPath().equals("exit")) {
         break;
@@ -77,48 +76,12 @@ public class Main {
 //--------------------------------------detail------------------------------------------------------------------
 
       else if (rq.getUrlPath().equals("/usr/article/detail")) {
-
-        if (params.containsKey("id") == false) {
-          System.out.println("id를 입력해주세요");
-          continue;
-        }
-        // rq.getParams().get("id); 이렇게도 사용가능함. 이게 더 좋음
-
-        // int id = Integer.parseInt(params.get("id"));// 형변환
-
-        int id = 0;
-
-        try { // exception 걸러내기  유효성 검사라고함.
-          id = Integer.parseInt(params.get("id"));
-        } catch (NumberFormatException e) {
-          System.out.println("id를 정수 형태로 입력해주세요.");
-          continue;
-        }
-
-        // /usr/article/detail 입력 햇을시 내용물이 없으면 출력하고 다시 명령 하기.
-        if (articles.isEmpty() /*lastArticle == null*/ || id > articles.size()) {
-          // 게시물이 비어있거나 입력한 id가 article에 size를 넘을경우 출력
-          // articles.size() == 0  ,
-          System.out.println("게시물이 존재하지 않습니다.");
-          continue; // 위로 다시 돌려보내기.
-        }
-
-        Article article = articles.get(id - 1);
-
-        // 마지막 게시물 가져오기
-        // lastArticle 변수 필요성을 제거.
-        // Article article = lastArticle;
-
-        System.out.printf("== 게시물 상세내용== \n");
-        System.out.printf("번호 : %d\n", article.id);
-        System.out.printf("제목 : %s\n", article.title);
-        System.out.printf("내용 : %s\n", article.content);
-
+        actionUsrArticleDetail(rq, articles);
       }
 //--------------------------------------list------------------------------------------------------------------
 
       else if (rq.getUrlPath().equals("/usr/article/list")) {
-        actionUsrArticleList(articles, rq);
+        actionUsrArticleList(rq, articles);
       }
 
 
@@ -130,9 +93,49 @@ public class Main {
     System.out.println("== 프로그램 종료 == ");
     sc.close();
   }
+//---------------------------------------- actionUsrArticleDetail----------------------------------------------------------------------
+  private static void actionUsrArticleDetail(Rq rq, List<Article> articles) {
+    Map<String, String> params = rq.getParams();
+
+    if (params.containsKey("id") == false) {
+      System.out.println("id를 입력해주세요");
+      return;
+    }
+    // rq.getParams().get("id); 이렇게도 사용가능함. 이게 더 좋음
+
+    // int id = Integer.parseInt(params.get("id"));// 형변환
+
+    int id = 0;
+
+    try { // exception 걸러내기  유효성 검사라고함.
+      id = Integer.parseInt(params.get("id"));
+    } catch (NumberFormatException e) {
+      System.out.println("id를 정수 형태로 입력해주세요.");
+      return;
+    }
+
+    // /usr/article/detail 입력 햇을시 내용물이 없으면 출력하고 다시 명령 하기.
+    if (articles.isEmpty() /*lastArticle == null*/ || id > articles.size()) {
+      // 게시물이 비어있거나 입력한 id가 article에 size를 넘을경우 출력
+      // articles.size() == 0  ,
+      System.out.println("게시물이 존재하지 않습니다.");
+      return;
+    }
+
+    Article article = articles.get(id - 1);
+
+    // 마지막 게시물 가져오기
+    // lastArticle 변수 필요성을 제거.
+    // Article article = lastArticle;
+
+    System.out.printf("== 게시물 상세내용== \n");
+    System.out.printf("번호 : %d\n", article.id);
+    System.out.printf("제목 : %s\n", article.title);
+    System.out.printf("내용 : %s\n", article.content);
+  }
 
   //----------------------------actionUsrArticleList list문-------------------------------------------
-  private static void actionUsrArticleList(List<Article> articles, Rq rq) {
+  private static void actionUsrArticleList(Rq rq, List<Article> articles ) {
 
     System.out.println("== 게시물 리스트 ==");
     System.out.println("-------------------");
