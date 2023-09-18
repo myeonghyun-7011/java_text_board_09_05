@@ -26,14 +26,14 @@ public class UsrMemberController {
       membersLastId = members.get(members.size() - 1).id;
     }
   }
-
+  //------------------------------------회원 임의 생성--------------------------------------------------------
   public void makeTestData() {
     for (int i = 1; i <= 3; i++) {
       members.add(new Member(i, "User" + i, "1234", "회원" + i));
     }
   }
 
-
+  //---------------------------------------join-----------------------------------------------------
   public void actionJoin() {
     System.out.println("== 회원가입 ==");
 
@@ -87,7 +87,17 @@ public class UsrMemberController {
     System.out.printf("\"%s\"님 회원가입 되었습니다.\n", member.name);
   }
 
+  //----------------------------------login----------------------------------------------------------
+
   public void actionLogin(Rq rq) {
+    // 이미 로그인 되어 있으면 중복 로그인 않게끔 방지
+    boolean loginedMemberIsEmpty = rq.hasSessionAttr("loginedMember");
+
+    if(loginedMemberIsEmpty == true){
+      System.out.println("이미 로그인 상태입니다.");
+      return;
+    }
+
     System.out.printf("로그인 아이디 : ");
     String loginId = Container.sc.nextLine();
 
@@ -95,7 +105,8 @@ public class UsrMemberController {
       System.out.println("로그인 아이디를 입력해주세요.");
     }
 
-    Member member = getMemberByLoginId(loginId); // 내가 입력한 로그인 아이디가 현재 get함수가 찾아온게 일치하면  member 복사리모컨으로 불러옴
+    Member member = getMemberByLoginId(loginId);
+    // 내가 입력한 로그인 아이디가 현재 get함수가 찾아온게 일치하면  member 복사리모컨으로 불러옴
 
     if (member == null) {
       System.out.println("해당 회원은 존재하지 않습니다.");
@@ -114,7 +125,9 @@ public class UsrMemberController {
       return;
     }
 
-    rq.setSessionAttr("loginedMember", member); // key, value //rq한테 부탁을함 너가 session을 구해서 member에 저장해줘
+    rq.setSessionAttr("loginedMember", member);
+    // key, value //rq한테 부탁을함 너가 session을 구해서 member에 저장해줘
+    // key로 접근해서 데이터 가져올수잇음.
 
     System.out.printf("\"%s\"님 환영합니다.\n", member.loginId);
   }
@@ -126,5 +139,18 @@ public class UsrMemberController {
       }
     }
     return null;
+  }
+
+  public void actionLogout(Rq rq) {
+    Member loginedMember = (Member) Container.session.getAttribute("loginedMember");
+// 로그인되어 있는 회원들 가져오기. / 형변환된 key값으로 접근
+
+    if(loginedMember == null){ // 로그인된 멤버가 없을경우
+      System.out.println("로그인 후 이용해주세요.");
+      return;
+    }
+
+    rq.removeSessionAttr("loginedMember");
+    System.out.println("로그아웃 되었습니다.");
   }
 }

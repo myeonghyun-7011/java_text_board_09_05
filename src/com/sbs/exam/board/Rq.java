@@ -9,13 +9,14 @@ import java.util.Objects;
 public class Rq {
   public String url;
   public Map<String, String> params; // params = 0; 이랑 같음.
-
   public String urlPath;
+  private Session session;
 
   Rq(String url) {
     this.url = url;
     urlPath = Util.getUrlPathFromUrl(this.url);
     params = Util.getParamsFromUrl(this.url);
+    session = Container.getSession();
   }
 
   public Map<String, String> getParams() {
@@ -54,9 +55,17 @@ public class Rq {
       return params.get(paramName);
     }
 
-  public void setSessionAttr(String key, Object value) { //session을 가져와 저장해줌
-    Session session =Container.getSession();
+  public void setSessionAttr(String key, Object value) { // session = 공공제
+    //session을 가져와 저장해줌 object는 bollen,int,float 범용적으로 받아 올 수 있음.
     session.setAttribute(key, value); //get  가져오기 set 저장
+  }
+
+  public void removeSessionAttr(String key) {
+    session.removeAttribute(key);
+  }
+
+  public boolean hasSessionAttr(String key) {
+    return session.hasAttribute(key);
   }
 }
 
