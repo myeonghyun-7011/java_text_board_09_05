@@ -1,6 +1,10 @@
 package com.sbs.exam.board;
 
+import com.sbs.exam.board.container.Container;
+import com.sbs.exam.board.session.Session;
+
 import java.util.Map;
+import java.util.Objects;
 
 public class Rq {
   public String url;
@@ -49,7 +53,12 @@ public class Rq {
       }
       return params.get(paramName);
     }
+
+  public void setSessionAttr(String key, Object value) { //session을 가져와 저장해줌
+    Session session =Container.getSession();
+    session.setAttribute(key, value); //get  가져오기 set 저장
   }
+}
 
 
 /*

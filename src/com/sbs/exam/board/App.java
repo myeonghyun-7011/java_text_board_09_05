@@ -1,6 +1,7 @@
 package com.sbs.exam.board;
 
 import com.sbs.exam.board.container.Container;
+import com.sbs.exam.board.session.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +12,8 @@ public class App {
 
 
   public void run() {
-
-
     Scanner sc = Container.sc;
+    Session session = Container.getSession();
 
 
     System.out.println("== 게시판 v 0.1 == ");
@@ -21,7 +21,15 @@ public class App {
 
 //--------------------------------------whil문 시작 ------------------------------------------------------------------
     while (true) {
-      System.out.printf("명령 : ");
+      Member loginedMember = (Member) session.getAttribute("loginedMember");
+
+      String promptName = "명령어";
+
+      if(loginedMember != null){
+        promptName = loginedMember.loginId;
+      }
+
+      System.out.printf("%s : ", promptName);
       String cmd = sc.nextLine();
 
       Rq rq = new Rq(cmd);
@@ -55,7 +63,7 @@ public class App {
       }
 //--------------------------------------------------------------------------------------------------------
       else if (rq.getUrlPath().equals("/usr/member/login")) {
-        Container.usrMemberController.actionLogin();
+        Container.usrMemberController.actionLogin(rq);
       }
 //--------------------------------------종료문------------------------------------------------------------------
       else {

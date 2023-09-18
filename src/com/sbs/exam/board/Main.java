@@ -16,8 +16,5 @@ public class Main {
   */
   public static void main(String[] args) {
     new App().run(); // main에 static사용해서 App애 있는 모든 static을 사용하지 않아도된다.
-
-
-
   }
 }
