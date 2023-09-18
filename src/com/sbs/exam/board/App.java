@@ -53,6 +53,10 @@ public class App {
       else if (rq.getUrlPath().equals("/usr/member/join")) {
         Container.usrMemberController.actionJoin();
       }
+//--------------------------------------------------------------------------------------------------------
+      else if (rq.getUrlPath().equals("/usr/member/login")) {
+        Container.usrMemberController.actionLogin();
+      }
 //--------------------------------------종료문------------------------------------------------------------------
       else {
         System.out.println("잘못된 명령어 입니다");
